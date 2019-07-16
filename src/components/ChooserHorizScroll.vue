@@ -1,16 +1,7 @@
-<!-- Use css transform rather than element positioning - positioning does repainting which is resource intensive at the least and I suspect (could be misunderstanding) messes with Vue  -->
-<template>
-  <div class="horiz-chooser-frame" :id="frameID" @mousedown.prevent="grabBar">
-    <div class="horiz-scroller" :id="scrollerID" :style="xTransformStyle">
-      <div v-for="(targ, index) in targets" :key="index" @mousedown.prevent="tempSelect(targ)" @click.prevent="selectWithClick(targ)" @mouseup.prevent class="horiz-slider-item">{{targ}}</div>
-    </div>
-  </div>
-</template>
-
 <script>
 let uuid = 0 // this is for keeping track of instances of the component
 export default {
-  name: 'HorizScrollChooserXStep',
+  name: 'ChooserHorizScroll',
   data: function () {
     return {
       halfDeltaW: {}, // half of the difference between the frame element and the bar with all items in it
@@ -44,7 +35,7 @@ export default {
       return {transform: 'translateX(' + this.xShift + 'px)'}
     },
     frameID () {
-      return ("horiz-chooser-frame" + uuid.toString())
+      return ("chooser-horiz-scroll-frame" + uuid.toString())
     },
     scrollerID () {
       return ("horiz-chooser-scrolling-bar" + uuid.toString())
@@ -202,20 +193,27 @@ export default {
 }
 </script>
 
+<template>
+  <div class="chooser-horiz-scroll-frame" :id="frameID" @mousedown.prevent="grabBar">
+    <div class="chooser-horiz-scroller" :id="scrollerID" :style="xTransformStyle">
+      <div v-for="(targ, index) in targets" :key="index" @mousedown.prevent="tempSelect(targ)" @click.prevent="selectWithClick(targ)" @mouseup.prevent class="chooser-horiz-scroll-item">{{targ}}</div>
+    </div>
+  </div>
+</template>
+
 <style>
 
-  .horiz-chooser-frame {
+  .chooser-horiz-scroll-frame {
     width: 50%;
     align-self: center;
     padding: 5px;
     background: #fff;
-    /*overflow: visible;*/
     overflow: hidden;
     text-align: center;
     border: 1px solid;
   }
 
-  .horiz-scroller {
+  .chooser-horiz-scroller {
     max-width: 5000%; /* to counter anything set in the embedding document */
     position: relative;
     left: 0;
@@ -228,7 +226,7 @@ export default {
     /*outline: 1px dashed red;*/
   }
 
-  .horiz-slider-item {
+  .chooser-horiz-scroll-item {
     padding: 0 0.2em;
   }
 </style>

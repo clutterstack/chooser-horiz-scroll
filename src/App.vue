@@ -1,23 +1,9 @@
-
-
-<template>
-<div id="test-div">
-  <div id="readout-div">
-    <div id="display-last-selected">Last selection: {{lastSelected}} </div>
-    <div id="display-temp-selected">Temporary selection: {{tempTarg}} </div>
-    <div id="display-selected">Current selection: {{selectedTarg}} </div>
-  </div>
-  <ChooserHorizScroll :targets="timeYears" v-on:select-temptarg="updateTempTarg" v-on:select-target="acceptTarget"></ChooserHorizScroll>
-</div>
-</template>
-
 <script>
-
 import ChooserHorizScroll from './components/ChooserHorizScroll.vue'
 // import {genGradients} from './mixins/genGradients.js'
 export default {
   name: 'DateSortDrag',
-  components: { ChooserHorizScroll},
+  components: {ChooserHorizScroll},
   // mixins: [genGradients],
   data: function () {
     return {
@@ -34,7 +20,7 @@ export default {
     }
   },
   computed: {
-    timeYears: function () {
+    timeYears: function () { // Takes the first and last year from sortYearsRange and fills in the rest
       var years = []
       for (var i = this.sortYearsRange[0]; i <= this.sortYearsRange[1]; i++) {
         years.push(i)
@@ -54,8 +40,18 @@ export default {
 }
 </script>
 
-<style>
+<template>
+<div id="test-div">
+  <div id="readout-div">
+    <div id="display-last-selected">Last selection: {{lastSelected}} </div>
+    <div id="display-temp-selected">Temporary selection: {{tempTarg}} </div>
+    <div id="display-selected">Current selection: {{selectedTarg}} </div>
+  </div>
+  <ChooserHorizScroll :targets="timeYears" v-on:select-temptarg="updateTempTarg" v-on:select-target="acceptTarget"></ChooserHorizScroll>
+</div>
+</template>
 
+<style>
 #sort-div {
   display: flex;
   flex-direction: column;
@@ -69,6 +65,4 @@ export default {
   overflow: hidden;
   justify-content: flex-start;
 }
-
-
 </style>
