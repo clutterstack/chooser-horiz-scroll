@@ -7,6 +7,7 @@ export default {
   // mixins: [genGradients],
   data: function () {
     return {
+      mouseExited: false,
       selectedTarg: null, // the selected value
       tempTarg: null, // temp selected value while dragging
       lastSelected: null // previous selected value
@@ -29,6 +30,19 @@ export default {
     }
   },
   methods: {
+    dottedBorder(ev) {
+      ev.target.style.border = '5px dotted orange';
+    },
+    normalBorder(ev) {
+      ev.target.style.border = '2px solid black';
+    },
+    mouseLeaveMethod() {
+      // document.removeEventListener
+      this.mouseExited = true
+    },
+    mouseEnterMethod() {
+      this.mouseExited = false
+    },
     updateTempTarg(targ) {
       this.tempTarg = targ
     },
@@ -41,13 +55,13 @@ export default {
 </script>
 
 <template>
-<div id="test-div">
+<div id="test-div" @mouseenter="mouseEnterMethod" @mouseleave="mouseLeaveMethod">
   <div id="readout-div">
     <div id="display-last-selected">Last selection: {{lastSelected}} </div>
     <div id="display-temp-selected">Temporary selection: {{tempTarg}} </div>
     <div id="display-selected">Current selection: {{selectedTarg}} </div>
   </div>
-  <ChooserHorizScroll :targets="timeYears" v-on:select-temptarg="updateTempTarg" v-on:select-target="acceptTarget"></ChooserHorizScroll>
+  <ChooserHorizScroll :mouseOutOfBounds="mouseExited" :targets="timeYears" @select-temptarg="updateTempTarg" @select-target="acceptTarget"></ChooserHorizScroll>
 </div>
 </template>
 

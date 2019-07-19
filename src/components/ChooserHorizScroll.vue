@@ -2,6 +2,16 @@
 let uuid = 0 // this is for keeping track of instances of the component
 export default {
   name: 'ChooserHorizScroll',
+  props: {
+    mouseOutOfBounds: { // this allows the parent to account for the user letting go of the bar outside of the component after starting to drag the bar
+      type: Boolean,
+      default: false
+    },
+    targets: {
+      type: Array,
+      default () {return [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ]}
+    }
+  },
   data: function () {
     return {
       halfDeltaW: {}, // half of the difference between the frame element and the bar with all items in it
@@ -19,17 +29,6 @@ export default {
       dx: 0
     }
   },
-  props: {
-    targets: {
-      type: Array,
-      default () {return [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 ]}
-    }
-  },
-  beforeCreate() { // Create a unique ID for this instance of this component
-      this.uuid = uuid.toString();
-      //console.log(this.uuid)
-      uuid += 1;
-  },
   computed: {
     xTransformStyle () {
       return {transform: 'translateX(' + this.xShift + 'px)'}
@@ -42,13 +41,22 @@ export default {
     }
   },
   watch: {
+    mouseOutOfBounds: function() {
+      this.throwBar()
+    },
     // When the targets prop changes, recentre sort-scroll-bar
     targets: function() {
       this.xShift = 0
       this.barStartX = 0
     }
   },
-  mounted: function () {
+  beforeCreate() { // Create a unique ID for this instance of this component
+      this.uuid = uuid.toString();
+      //console.log(this.uuid)
+      uuid += 1;
+  },
+  mounted() {
+    // this.$root.$on('mouseLeft',this.throwBar),
     this.compareWidths()
   },
   methods: {
@@ -114,8 +122,8 @@ export default {
         }
       }
     },
-    throwBar (ev) {
-      ev.stopPropagation()
+    throwBar () {
+      // ev.stopPropagation()
       document.removeEventListener('mousemove', this.dragBar, true)
       document.removeEventListener('mouseup', this.throwBar, true)
       var len = this.trackRecord.length
@@ -129,6 +137,7 @@ export default {
           dx = limit
         }
         this.dx = dx
+        this.trackRecord = []
         if (Math.abs(this.xShift) > this.halfDeltaW.magnitude) { // if let go outside of stretch range, relax to edge
           window.requestAnimationFrame(this.relaxStep)
         }
