@@ -3,7 +3,7 @@ let uuid = 0 // this is for keeping track of instances of the component
 export default {
   name: 'ChooserHorizScroll',
   props: {
-    mouseOutOfBounds: { // this allows the parent to account for the user letting go of the bar outside of the component after starting to drag the bar
+    mouseOutOfBounds: { // this allows the parent some control over what happens if the user lets go of the bar with the mouse outside of the component
       type: Boolean,
       default: false
     },
@@ -90,6 +90,7 @@ export default {
       this.$emit('select-temptarg', null)
     },
     grabBar (ev) {
+      // Starts moving the bar
       this.compareWidths()
       this.trackRecord = []
       this.mouseXStart = ev.pageX
@@ -98,6 +99,7 @@ export default {
       document.addEventListener('mouseup', this.throwBar, true)
     },
     dragBar (ev) {
+      // Keeps moving the bar while mouse is down
       ev.stopPropagation()
       var mousex = ev.pageX
       var mouseOffset = mousex - this.mouseXStart
@@ -123,7 +125,7 @@ export default {
       }
     },
     throwBar () {
-      // ev.stopPropagation()
+      // Releases the bar, and starts it gliding
       document.removeEventListener('mousemove', this.dragBar, true)
       document.removeEventListener('mouseup', this.throwBar, true)
       var len = this.trackRecord.length
@@ -147,9 +149,37 @@ export default {
         }
       }
     },
+
+    glideStep () {
+      // Callback for requestAnimationFrame
+      // Moves the bar a bit, reduces its speed gradually based on animation speed parameters in data
+      // Allows for hitting end of travel and relaxing back (using this.relaxStep)
+      //console.log("glideStep: frictionFac = " + this.frictionFac + "; dx = " + dx )
+      if (this.stillGoing) {
+        var dx = this.dx
+        var stepSize = Math.abs(dx)
+        this.xShift = this.xShift + dx
+        if (stepSize < this.lowSpeedLimit ) {
+          //console.log('hit lowSpeedLimit')
+          this.stillGoing = false
+          this.barStartX = this.xShift
+        }
+        var pos = this.xShift
+        var maxShift = this.halfDeltaW.magnitude
+        if (pos < -maxShift || pos > maxShift ) {
+          //console.log("glided past endpoint: xShift = " + this.xShift)
+          window.requestAnimationFrame(this.relaxStep)
+        }
+        else {
+          // decrease speed for next loop
+          this.dx = dx*(1-this.frictionFac)
+          window.requestAnimationFrame(this.glideStep)
+        }
+      }
+    },
     relaxStep () {
-      // Brings bar to within range if dragged too far. Purely aesthetic to allow it to be dragged a bit past end of box
-      //console.log("relaxStep")
+      // Callback for requestAnimationFrame()
+      // Brings bar to within range if dragged too far. Purely aesthetic to allow it to be dragged a bit past end position and relax to a stop
       var pos = this.xShift
       var maxShift = this.halfDeltaW.magnitude
       var dx = this.relaxStepSize
@@ -172,31 +202,6 @@ export default {
         this.barStartX = this.xShift
       }
 
-    },
-    glideStep () {
-      //console.log("glideStep: frictionFac = " + this.frictionFac + "; dx = " + dx )
-      // Callback for requestAnimationFrame after throw
-      if (this.stillGoing) {
-        var dx = this.dx
-        var stepSize = Math.abs(dx)
-        this.xShift = this.xShift + dx
-        if (stepSize < this.lowSpeedLimit ) {
-          //console.log('hit lowSpeedLimit')
-          this.stillGoing = false
-          this.barStartX = this.xShift
-        }
-        var pos = this.xShift
-        var maxShift = this.halfDeltaW.magnitude
-        if (pos < -maxShift || pos > maxShift ) {
-          //console.log("glided past endpoint: xShift = " + this.xShift)
-          window.requestAnimationFrame(this.relaxStep)
-        }
-        else {
-          // decrease speed for next loop
-          this.dx = dx*(1-this.frictionFac)
-          window.requestAnimationFrame(this.glideStep)
-        }
-      }
     }
   }
 }
