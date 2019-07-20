@@ -30,14 +30,7 @@ export default {
     }
   },
   methods: {
-    dottedBorder(ev) {
-      ev.target.style.border = '5px dotted orange';
-    },
-    normalBorder(ev) {
-      ev.target.style.border = '2px solid black';
-    },
     mouseLeaveMethod() {
-      // document.removeEventListener
       this.mouseExited = true
     },
     mouseEnterMethod() {

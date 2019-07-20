@@ -42,7 +42,9 @@ export default {
   },
   watch: {
     mouseOutOfBounds: function() {
+      if (this.mouseOutOfBounds) {
       this.throwBar()
+      }
     },
     // When the targets prop changes, recentre sort-scroll-bar
     targets: function() {
@@ -139,7 +141,6 @@ export default {
           dx = limit
         }
         this.dx = dx
-        this.trackRecord = []
         if (Math.abs(this.xShift) > this.halfDeltaW.magnitude) { // if let go outside of stretch range, relax to edge
           window.requestAnimationFrame(this.relaxStep)
         }

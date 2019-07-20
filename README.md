@@ -10,7 +10,7 @@ Takes an array of values (`targets`) as a prop. Emits one of two custom events, 
 
 In the demo, these events are treated as a selection and a tentative selection.
 
-There is another prop (`mouseOutOfBounds`), that is watched by the component and is treated the same as a mouseup on its `document`. It is used by the demo app to indicate that the mouse has left its root element, which allows more predictable behaviour when embedded using `<object>` or `<iframe>` in another page (such as the demo post linked above).
+There is another prop (`mouseOutOfBounds`), that is watched by the component and is treated the same as a `mouseup` on its `document`. It is used by the demo app to indicate that the mouse has left its root element, which allows more predictable behaviour when embedded using `<object>` or `<iframe>` in another page (such as the demo post linked above).
 
 ## Animation
 
