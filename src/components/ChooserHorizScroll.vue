@@ -43,7 +43,7 @@ export default {
   watch: {
     mouseOutOfBounds: function() {
       if (this.mouseOutOfBounds) {
-      this.throwBar()
+        this.throwBar()
       }
     },
     // When the targets prop changes, recentre sort-scroll-bar
@@ -149,6 +149,7 @@ export default {
           window.requestAnimationFrame(this.glideStep)
         }
       }
+      this.trackRecord = []
     },
 
     glideStep () {
