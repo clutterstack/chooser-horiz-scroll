@@ -2,6 +2,8 @@
 
 A Vue.js component for selecting a value from an array, displayed horizontally and scrollable if the rendered row of items is larger than the containing `<div>`.
 
+*Does not work on mobile in its current state, because it uses mouse events.*
+
 This repo wraps the component in a test Vue app to make it easy to demonstrate. Live demo with further details lives at [chrisnicoll.net](http://chrisnicoll.net/web-stuff/vue-misc/vue-horizontal-chooser-component/).
 
 ## Props
